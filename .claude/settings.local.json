@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip install *)",
+      "Bash(python products/product_creator.py)",
+      "Bash(python -c ' *)",
+      "Bash(python products/gumroad_lister.py)",
+      "Bash(python outreach/reddit_drafter.py)",
+      "Bash(python core/survival_engine.py)"
+    ]
+  }
+}
