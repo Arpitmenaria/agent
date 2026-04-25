@@ -1,0 +1,37 @@
+name: Darwin Agent Daily Run
+on:
+  schedule:
+    - cron: '30 4 * * *'
+  workflow_dispatch:
+jobs:
+  run-agent:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r darwin-agent/requirements.txt
+
+      - name: Create env file
+        run: |
+          echo GROQ_API_KEY=${{ secrets.GROQ_API_KEY }} >> darwin-agent/.env
+          echo GUMROAD_TOKEN=${{ secrets.GUMROAD_TOKEN }} >> darwin-agent/.env
+          echo AIRTABLE_TOKEN=${{ secrets.AIRTABLE_TOKEN }} >> darwin-agent/.env
+          echo AIRTABLE_BASE_ID=${{ secrets.AIRTABLE_BASE_ID }} >> darwin-agent/.env
+          echo AGENT_NAME=DARWIN-001 >> darwin-agent/.env
+
+      - name: Run survival engine
+        run: cd darwin-agent && python core/survival_engine.py
+
+      - name: Commit updated state
+        run: |
+          git config --global user.email agent@darwin.ai
+          git config --global user.name Darwin-Agent
+          git add darwin-agent/core/state.json
+          git commit -m 'Agent state update' || echo 'No changes'
+          git push
