@@ -1,6 +1,6 @@
 {
-  "status": "warning",
+  "status": "alive",
   "survival_days": 0,
-  "death_countdown": 1,
+  "death_countdown": 7,
   "last_sales": 0
 }
